@@ -3,13 +3,32 @@ from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
 from random import randrange
-
+import psycopg
+from psycopg.rows import dict_row # We use psycopg to connect to the PostgreSQL database
+import time
 
 app = FastAPI()
 
 
 my_posts = [{"title": "title of post 1", "content": "content of post 1", "id": 1},
             {"title": "favourite food","content":"I like pizzan" ,"id":2}]
+
+while True:
+    try:
+        conn = psycopg.connect(host="localhost",
+                            dbname="fastapi",
+                            user="postgres",
+                            password="2064",
+                            row_factory=dict_row)
+        curosr= conn.cursor()
+        print("Database connection successful")
+        break
+        
+    except Exception as error:
+        print("Database connection failed")
+        print("Error: ", error)
+        time.sleep(2)
+
 
 
 # Pydantic model for creating the post
