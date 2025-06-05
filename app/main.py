@@ -20,7 +20,7 @@ while True:
                             user="postgres",
                             password="2064",
                             row_factory=dict_row)
-        curosr= conn.cursor()
+        cursor= conn.cursor()
         print("Database connection successful")
         break
         
@@ -28,8 +28,6 @@ while True:
         print("Database connection failed")
         print("Error: ", error)
         time.sleep(2)
-
-
 
 # Pydantic model for creating the post
 #ID is not here because we dont expect user to provide one
@@ -57,6 +55,8 @@ async def root():
 
 @app.get("/posts")
 def get_posts():
+    posts = cursor.execute("""SELECT * FROM posts""")
+    print(posts)
     return{"data":my_posts}
 
 
@@ -71,6 +71,7 @@ def create_posts(post: Post):
 #{id} is a path parameter
 @app.get("/posts/{id}")
 def get_post(id: int, response:Response):
+
     post = find_post(id)
 
     if not post:
